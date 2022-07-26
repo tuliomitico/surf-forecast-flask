@@ -6,7 +6,7 @@ class Config:
     API_URL = 'https://api.stormglass.io/v2/'
     API_TOKEN = os.getenv('STORM_GLASS_API_TOKEN')
     MONGODB_SETTINGS = {
-        'db': 'surf-forecast',
+        'host': os.getenv('MONGODB_URL',"mongodb://localhost/surf-forecast"),
         'uuidRepresentation': 'standard'
     }
     SECRET_KEY = os.getenv('SECRET_KEY')

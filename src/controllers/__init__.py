@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC
+import logging
 
 from mongoengine.errors import ValidationError, NotUniqueError
 
@@ -8,7 +9,8 @@ class BaseController(ABC):
         if isinstance(error,ValidationError):
             client_errors = self.__handle_client_errors(error)
             return client_errors
-        return {"code": 500, "error": "Something went wrong!: {}".format(str(error))}, 500
+        logging.info(repr(error))
+        return {"code": 500, "error": "Something went wrong!"}, 500
 
     def __handle_client_errors(self,error: ValidationError):
         if "DUPLICATED" in str(error.errors.values()):

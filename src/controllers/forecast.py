@@ -1,4 +1,5 @@
 import json
+import logging
 from flask.json import jsonify
 from flask_classful import FlaskView, route
 from flask_jwt_extended import current_user,jwt_required
@@ -21,4 +22,5 @@ class ForecastController(FlaskView):
             forecast_data = forecast.process_forecast_for_beaches(result)
             return jsonify(forecast_data), 200
         except Exception as e:
+            logging.error(repr(e))
             return {"error" : str(e)},500

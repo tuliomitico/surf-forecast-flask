@@ -1,4 +1,5 @@
 import json
+import logging
 
 from flask.json import jsonify
 from flask_classful import FlaskView, route, request
@@ -27,13 +28,19 @@ class BeachesController(FlaskView):
             return result, 201
         except (ValidationError,Exception) as e:
             if not getattr(e,'message'):
+                logging.error(repr(e))
                 return {"error": "Internal Error"}, 500
             return {"error": e.message}, 422
-    
+    @route('')
     def get(self):
-        beach = Beach.objects.all()
-        result = json.loads(beach.to_json())
-        for i in result:
-            i['id'] = i['_id']
-            del i['_id']
-        return jsonify(result)
+        try:
+            beach = Beach.objects.all()
+            result = json.loads(beach.to_json())
+            for i in result:
+                i['id'] = i['_id']
+                del i['_id']
+            return jsonify(result)
+        except (ValidationError,Exception) as e:
+            if not getattr(e,'message'):
+                return {"error": "Internal Error"}, 500
+            return {"error": e.message}, 422

@@ -8,6 +8,8 @@ jwt = JWTManager()
 def my_invalid_token_callback(jwt_payload):
     if jwt_payload == 'Not enough segments':
         return dict(code = 401,error = 'jwt malformed'), 401
+    if jwt_payload == 'Signature verification failed':
+        return dict(code = 401, error= 'jwt signature error'), 401
 
 @jwt.unauthorized_loader
 def my_unauthorized_callback(jwt_payload: str):

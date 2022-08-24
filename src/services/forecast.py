@@ -1,3 +1,4 @@
+import logging
 from ..clients.storm_glass import StormGlass
 from ..utils.errors.internal_error import InternalError
 
@@ -11,11 +12,13 @@ class Forecast():
     
     def process_forecast_for_beaches(self, beaches: list):
         point_with_correct_source = []
+        logging.info(f"Preparing the forecast for {len(beaches)} beaches")
         try:
             self.__enriched_beach_data(beaches, point_with_correct_source)
 
             return self.__map_forecast_by_time(point_with_correct_source)
         except ForecastProcessingInternalError as err:
+            logging.error(repr(err))
             raise ForecastProcessingInternalError(err.message)
 
     def __enriched_beach_data(self, beaches, point_with_correct_source):

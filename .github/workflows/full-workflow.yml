@@ -46,6 +46,6 @@ jobs:
 
       - name: Deploy application
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-        uses: bervProject/railway-deploy@v0.0.6-alpha
+        uses: bervProject/railway-deploy@0.0.6-alpha
         with:
           railway_token: ${{secrets.RAILWAY_TOKEN}}

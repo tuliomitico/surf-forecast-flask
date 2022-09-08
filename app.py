@@ -6,7 +6,7 @@ from enum import Enum
 from src.server import create_app
 import src.logger
 
-app = create_app('src.config.DevelopmentConfig')
+app = create_app('src.config.ProductionConfig')
 
 class ExitStatus(Enum):
     Failure = 1

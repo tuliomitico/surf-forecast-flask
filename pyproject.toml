@@ -16,6 +16,9 @@ Flask-JWT-Extended = "~4.3.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 blinker = "^1.4"
 waitress = "^2.1.2"
+Flask-Cors = "^3.0.10"
+PasteDeploy = "^3.0.1"
+Paste = "^3.5.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "~6.0"

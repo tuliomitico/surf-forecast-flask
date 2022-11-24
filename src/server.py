@@ -2,6 +2,7 @@ import typing as t
 import json
 
 from flask import Flask
+from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .controllers.beaches import BeachesController
@@ -17,6 +18,7 @@ def setup_app(app: Flask) -> None:
 
 def create_app(config: t.Union[str, None, t.Dict[str,str]] = None) -> Flask:
     app = Flask(__name__)
+    cors = CORS(app,origins='*')
     if isinstance(config,dict):
         app.config.update(config)
     if isinstance(config,str) and config.endswith('.json'):

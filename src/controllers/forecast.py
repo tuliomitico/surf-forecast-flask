@@ -4,12 +4,14 @@ from flask.json import jsonify
 from flask_classful import FlaskView, route
 from flask_jwt_extended import current_user,jwt_required
 
+from . import BaseController
 from ..models.beach import Beach
 from ..services.forecast import Forecast
+from ..utils.errors.api_error import APIError
 
 forecast = Forecast()
 
-class ForecastController(FlaskView):
+class ForecastController(FlaskView, BaseController):
     route_base = "/forecast"
     trailing_slash = False
     decorators=[jwt_required()]
@@ -23,4 +25,4 @@ class ForecastController(FlaskView):
             return jsonify(forecast_data), 200
         except Exception as e:
             logging.error(repr(e))
-            return {"error" : str(e)},500
+            return self._send_error_response(api_error=APIError(code=500,message="Something went wrong"))

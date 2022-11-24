@@ -47,7 +47,8 @@ def test_throw_error(clean_beaches: str, client: FlaskClient):
     headers = {"Authorization": f'Bearer {clean_beaches}'}
     response = client.post('/beaches',headers=headers,json=beaches)
     assert response.status_code == 422
-    assert response.json['error'] == "ValidationError (Beach:None) (FloatField only accepts float and integer values: ['lat'])"
+    assert response.json['error'] == "Unprocessable Entity"
+    assert response.json['message'] == "ValidationError (Beach:None) (FloatField only accepts float and integer values: ['lat'])"
 
 @pytest.mark.skip("Should return 500 when there any error other than validation error")
 def test_internal_error():

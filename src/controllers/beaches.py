@@ -6,9 +6,11 @@ from flask_classful import FlaskView, route, request
 from flask_jwt_extended import jwt_required, current_user
 from mongoengine.errors import ValidationError
 
+
+from . import BaseController
 from ..models.beach import Beach
 
-class BeachesController(FlaskView):
+class BeachesController(FlaskView,BaseController):
     route_base = "/beaches"
     trailing_slash = False
     decorators=[jwt_required()]
@@ -27,10 +29,7 @@ class BeachesController(FlaskView):
             del result['_id']
             return result, 201
         except (ValidationError,Exception) as e:
-            if not getattr(e,'message'):
-                logging.error(repr(e))
-                return {"error": "Internal Error"}, 500
-            return {"error": e.message}, 422
+            return self._send_create_update_error_response(e)
     @route('')
     def get(self):
         try:

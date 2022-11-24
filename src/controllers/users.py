@@ -4,6 +4,8 @@ from flask.json import jsonify
 from flask_classful import FlaskView, route, request
 from mongoengine.errors import ValidationError
 
+from src.utils.errors.api_error import APIError
+
 from . import BaseController
 from ..models.user import User
 from ..services.auth import AuthService
@@ -28,9 +30,13 @@ class UsersController(FlaskView, BaseController):
         data = request.get_json()
         user = User.objects(email=data['email']).first()
         if not user:
-            return jsonify(code=401,error="User not found!"), 401
+            return self._send_error_response(
+                APIError(code=401,message="User not found!")
+            )
         if not AuthService.compare_password(data['password'], user.password):
-            return jsonify(code=401,error='Password does not match'), 401
+            return self._send_error_response(
+                APIError(code=401,message='Password does not match')
+            )
         result = user.to_json()
         token = AuthService.generate_token(result)
         return dict(**result,token=token), 200

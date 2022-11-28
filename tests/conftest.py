@@ -12,3 +12,9 @@ def app():
 def client(app: Flask):
   return app.test_client()
 
+@pytest.fixture(scope='function')
+def test_request(app: Flask):
+  ctx = app.test_request_context()
+  ctx.push()
+  yield ctx
+  ctx.pop()

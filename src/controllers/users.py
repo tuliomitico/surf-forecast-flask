@@ -2,6 +2,7 @@ import json
 
 from flask.json import jsonify
 from flask_classful import FlaskView, route, request
+from flask_jwt_extended import jwt_required, current_user
 from mongoengine.errors import ValidationError
 
 from src.utils.errors.api_error import APIError
@@ -40,6 +41,15 @@ class UsersController(FlaskView, BaseController):
         result = user.to_json()
         token = AuthService.generate_token(result)
         return dict(**result,token=token), 200
+
+    @route('/me')
+    @jwt_required()
+    def me(self):
+        if not current_user:
+            return self._send_error_response(APIError(code=404),message='User not found!')
+        user: User = current_user
+        return user.to_json(), 200
+
 
     def get(self):
         user = User.objects.all()

@@ -1,6 +1,7 @@
 """User functional tests"""
 import logging
 from flask import Flask
+from flask.ctx import RequestContext
 from flask.testing import FlaskClient
 import pytest
 
@@ -91,3 +92,30 @@ def test_authenticate_user_unauthorized_by_password(client: FlaskClient):
             "email" : new_user['email'], "password": 'different-password'
     })
     assert response.status_code == 401
+
+def test_user_profile_info(clean_users,test_request: RequestContext,client: FlaskClient):
+    """Should return token's owner profile info"""
+    new_user = {
+        "name": "John Doe",
+        "email": "john@mail.com",
+        "password": "1234"
+    }
+    user = User(**new_user).save()
+    token = AuthService.generate_token(user.to_json())
+    response = client.get('/users/me',headers={'Authorization': f'Bearer {token}'})
+    assert response.status_code == 200
+    assert set(new_user.keys()).issubset(set(response.json.keys()))
+
+def test_not_found(test_request: RequestContext,client: FlaskClient):
+    """Should return token's owner profile info"""
+    new_user = {
+        "name": "John Doe",
+        "email": "john@mail.com",
+        "password": "1234"
+    }
+    user = User(**new_user)
+    token = AuthService.generate_token(user)
+    response = client.get('/users/me',headers={'Authorization': f'Bearer {token}'})
+    print(response.json)
+    assert response.status_code == 404
+    assert response.json['message'] == "User not found!"

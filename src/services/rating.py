@@ -1,6 +1,7 @@
 from typing import TypedDict
 
 from ..models.beach import Beach
+from ..services.forecast import Forecast
 
 class Height(TypedDict):
     minimum: float
@@ -31,6 +32,15 @@ class Rating():
 
     def __init__(self, beach: Beach) -> None:
         self.__beach = beach
+
+    def get_rate_for_point(self, point: dict) -> int:
+        swell_direction = self.get_position_from_location(point['swell_direction'])
+        wind_direction = self.get_position_from_location(point['wind_direction'])
+        wind_and_wave_rating = self.get_rating_based_on_wind_and_wave_positions(swell_direction,wind_direction)
+        swell_height_rating = self.get_rating_for_swell_size(point['swell_height'])
+        swell_period_rating = self.get_rating_for_swell_period(point['swell_period'])
+        final_rating = round((wind_and_wave_rating + swell_height_rating + swell_period_rating) / 3)
+        return final_rating
 
     def get_rating_based_on_wind_and_wave_positions(
         self,wave_position: str,wind_position: str

@@ -21,7 +21,7 @@ class Forecast():
             logging.error(repr(err))
             raise ForecastProcessingInternalError(err.message)
 
-    def __enriched_beach_data(self, beaches, point_with_correct_source):
+    def __enriched_beach_data(self, beaches, point_with_correct_source: list):
         for beach in beaches:
             points = self._storm_glass.fetch_points(beach['lat'],beach['lng'])
             for point in points:

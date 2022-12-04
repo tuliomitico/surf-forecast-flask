@@ -14,13 +14,70 @@ beach = {
     "position": "E",
 }
 
+point = {
+    "swell_direction": 110,
+    "swell_height": 0.1,
+    "swell_period": 5,
+    "time": 'test',
+    "wave_direction": 110,
+    "wave_height": 0.1,
+    "wind_direction": 100,
+    "wind_speed": 100,
+}
+
 default_rating = Rating(Beach(**beach))
 
-@pytest.mark.skip()
-def test_padrao():
-    """Calculate rate for a given point."""
-    # TODO
-    assert True
+# Calculate rate for a given point.
+def test_poor_point():
+    """Get a rating for less than 1 for a poor point"""
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 1
+
+def test_ok_point():
+    """Get a rating of 1 for an OK point"""
+    point['swell_height'] = 0.4
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 1
+
+def test_regular_point():
+    """Get a rating of 3 for a point with offshore winds and a half overhead height"""
+    point['swell_height'] = 0.7
+    point['wind_direction'] = 250
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 3
+
+def test_optimal_point():
+    """Get a rating of 4 for a point with offshore winds,half overhead high swell and good interval"""
+    point['swell_height'] = 0.7
+    point['wind_direction'] = 250
+    point['swell_period'] = 12
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 4
+
+def test_optimal_point_2():
+    """Get a rating of 4 for a point with offshore winds, shoulder high swell and good interval"""
+    point["swell_height"] = 1.5
+    point["swell_period"] = 12
+    point["wind_direction"] = 250
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 4
+    
+def test_classic_day():
+    """Get a rating of 5 classic day!"""
+    point['swell_height'] = 2.5
+    point['swell_period'] = 16
+    point['wind_direction'] = 250
+    rating = default_rating.get_rate_for_point(point)
+    assert rating == 5
+    
+def test_optimal_point_3():
+    """Get a rating of 4 a good condition but with crossshore winds"""
+    point["swell_height"] = 2.5
+    point["swell_period"] = 16
+    point["wind_direction"] = 130
+    rating = default_rating.get_rate_for_point(point);
+    assert rating == 4
+    
 
 @pytest.mark.skip()    
 def test_padrao_2():
@@ -73,7 +130,7 @@ def test_rating_swell_size_of_ankle_to_knee():
     rating = default_rating.get_rating_for_swell_size(0.6)
     assert rating == 2
 
-def test_rating_sweel_size_of_waist():
+def test_rating_swell_size_of_waist():
     """Should get a rating of 3 for a waist high sweel"""
     rating = default_rating.get_rating_for_swell_size(1.5)
     assert rating == 3

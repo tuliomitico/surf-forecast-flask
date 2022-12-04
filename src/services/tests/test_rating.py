@@ -15,14 +15,14 @@ beach = {
 }
 
 point = {
-    "swell_direction": 110,
-    "swell_height": 0.1,
-    "swell_period": 5,
+    "swellDirection": 110,
+    "swellHeight": 0.1,
+    "swellPeriod": 5,
     "time": 'test',
-    "wave_direction": 110,
-    "wave_height": 0.1,
-    "wind_direction": 100,
-    "wind_speed": 100,
+    "waveDirection": 110,
+    "waveHeight": 0.1,
+    "windDirection": 100,
+    "windSpeed": 100,
 }
 
 default_rating = Rating(Beach(**beach))
@@ -35,46 +35,46 @@ def test_poor_point():
 
 def test_ok_point():
     """Get a rating of 1 for an OK point"""
-    point['swell_height'] = 0.4
+    point['swellHeight'] = 0.4
     rating = default_rating.get_rate_for_point(point)
     assert rating == 1
 
 def test_regular_point():
     """Get a rating of 3 for a point with offshore winds and a half overhead height"""
-    point['swell_height'] = 0.7
-    point['wind_direction'] = 250
+    point['swellHeight'] = 0.7
+    point['windDirection'] = 250
     rating = default_rating.get_rate_for_point(point)
     assert rating == 3
 
 def test_optimal_point():
     """Get a rating of 4 for a point with offshore winds,half overhead high swell and good interval"""
-    point['swell_height'] = 0.7
-    point['wind_direction'] = 250
-    point['swell_period'] = 12
+    point['swellHeight'] = 0.7
+    point['windDirection'] = 250
+    point['swellPeriod'] = 12
     rating = default_rating.get_rate_for_point(point)
     assert rating == 4
 
 def test_optimal_point_2():
     """Get a rating of 4 for a point with offshore winds, shoulder high swell and good interval"""
-    point["swell_height"] = 1.5
-    point["swell_period"] = 12
-    point["wind_direction"] = 250
+    point["swellHeight"] = 1.5
+    point["swellPeriod"] = 12
+    point["windDirection"] = 250
     rating = default_rating.get_rate_for_point(point)
     assert rating == 4
     
 def test_classic_day():
     """Get a rating of 5 classic day!"""
-    point['swell_height'] = 2.5
-    point['swell_period'] = 16
-    point['wind_direction'] = 250
+    point['swellHeight'] = 2.5
+    point['swellPeriod'] = 16
+    point['windDirection'] = 250
     rating = default_rating.get_rate_for_point(point)
     assert rating == 5
     
 def test_optimal_point_3():
     """Get a rating of 4 a good condition but with crossshore winds"""
-    point["swell_height"] = 2.5
-    point["swell_period"] = 16
-    point["wind_direction"] = 130
+    point["swellHeight"] = 2.5
+    point["swellPeriod"] = 16
+    point["windDirection"] = 130
     rating = default_rating.get_rate_for_point(point);
     assert rating == 4
     

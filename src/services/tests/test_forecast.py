@@ -9,7 +9,9 @@ from ...services.forecast import Forecast, ForecastProcessingInternalError
 
 pytestmark = pytest.mark.unit
 
-def test_should_return_the_forecast_for_mutiple_beaches_in_the_same_hour_with_different_ratings(mocker: MockerFixture):
+def test_should_return_the_forecast_for_mutiple_beaches_in_the_same_hour_with_different_ratings_ordered_by_rating(
+  mocker: MockerFixture
+):
     mocker.patch.object(StormGlass,'fetch_points',side_effect=[[
       {
         "swellDirection": 123.41,
@@ -57,21 +59,6 @@ def test_should_return_the_forecast_for_mutiple_beaches_in_the_same_hour_with_di
         "forecast": [
           {
             "lat": -33.792726,
-            "lng": 151.289824,
-            "name": 'Manly',
-            "position": 'E',
-            "rating": 2,
-            "swellDirection": 123.41,
-            "swellHeight": 0.21,
-            "swellPeriod": 3.67,
-            "time": '2020-04-26T00:00:00+00:00',
-            "waveDirection": 232.12,
-            "waveHeight": 0.46,
-            "windDirection": 310.48,
-            "windSpeed": 100,
-          },
-          {
-            "lat": -33.792726,
             "lng": 141.289824,
             "name": 'Dee Why',
             "position": 'S',
@@ -83,6 +70,21 @@ def test_should_return_the_forecast_for_mutiple_beaches_in_the_same_hour_with_di
             "waveDirection": 231.38,
             "waveHeight": 2.07,
             "windDirection": 299.45,
+            "windSpeed": 100,
+          },
+          {
+            "lat": -33.792726,
+            "lng": 151.289824,
+            "name": 'Manly',
+            "position": 'E',
+            "rating": 2,
+            "swellDirection": 123.41,
+            "swellHeight": 0.21,
+            "swellPeriod": 3.67,
+            "time": '2020-04-26T00:00:00+00:00',
+            "waveDirection": 232.12,
+            "waveHeight": 0.46,
+            "windDirection": 310.48,
             "windSpeed": 100,
           },
         ],

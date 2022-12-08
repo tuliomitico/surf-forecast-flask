@@ -19,6 +19,7 @@ waitress = "^2.1.2"
 Flask-Cors = "^3.0.10"
 PasteDeploy = "^3.0.1"
 Paste = "^3.5.2"
+flasgger = "^0.9.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "~6.0"

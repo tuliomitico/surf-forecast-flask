@@ -15,16 +15,25 @@ class Forecast():
         self._rating_service = rating_service
     
     def process_forecast_for_beaches(self, beaches: list):
-        point_with_correct_source = []
-        logging.info(f"Preparing the forecast for {len(beaches)} beaches")
         try:
-            self.__enriched_beach_data(beaches, point_with_correct_source,rating=self._rating_service)
-
-            return self.__map_forecast_by_time(point_with_correct_source)
+            beach_forecast = self.__calculate_rating(beaches)
+            for t in beach_forecast:
+                t['forecast'].sort(key=lambda d: d['rating'],reverse=True)
+            
+            return beach_forecast
+            
         except ForecastProcessingInternalError as err:
             logging.error(repr(err))
             raise ForecastProcessingInternalError(err.message)
+    
+    def __calculate_rating(self,beaches: list):
+        point_with_correct_source = []
+        logging.info(f"Preparing the forecast for {len(beaches)} beaches")
+        self.__enriched_beach_data(beaches, point_with_correct_source,rating=self._rating_service)
 
+        time_forecast = self.__map_forecast_by_time(point_with_correct_source)
+        return time_forecast
+        
     def __enriched_beach_data(self, beaches, point_with_correct_source: list, rating: Rating):
         for beach in beaches:
             try:
@@ -47,7 +56,7 @@ class Forecast():
         forecast_by_time = []
         for point in forecast:
             time_point = [i['time'] for i in forecast_by_time if i['time'] == point['time']] 
-            print(time_point)
+            # print(time_point)
             if time_point:
                 [forecast_by_time_2['forecast'].append(point) for forecast_by_time_2 in forecast_by_time]
             else: 

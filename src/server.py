@@ -1,6 +1,7 @@
 import typing as t
 import json
 
+from flasgger import Swagger
 from flask import Flask
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -19,6 +20,7 @@ def setup_app(app: Flask) -> None:
 def create_app(config: t.Union[str, None, t.Dict[str,str]] = None) -> Flask:
     app = Flask(__name__)
     cors = CORS(app,origins='*')
+    
     if isinstance(config,dict):
         app.config.update(config)
     if isinstance(config,str) and config.endswith('.json'):
@@ -26,6 +28,8 @@ def create_app(config: t.Union[str, None, t.Dict[str,str]] = None) -> Flask:
         app.config.update(json_config)
     else:
         app.config.from_object(config)
+
+    swagger = Swagger(app,template_file='./api_schema.json')
     setup_app(app)
     BeachesController.register(app)
     ForecastController.register(app)

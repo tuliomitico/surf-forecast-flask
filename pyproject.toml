@@ -20,6 +20,8 @@ Flask-Cors = "^3.0.10"
 PasteDeploy = "^3.0.1"
 Paste = "^3.5.2"
 flasgger = "^0.9.5"
+Flask-Limiter = "1.5"
+Flask-Caching = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "~6.0"

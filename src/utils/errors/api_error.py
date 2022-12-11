@@ -19,23 +19,15 @@ class APIErrorResponse(APIError):
 class ApiError():
     @staticmethod
     def format(error: APIError) -> APIErrorResponse:
+        errors = {
+                "message": error.message,
+                "code": error.code,
+                "error": error.code_as_string if error.code_as_string else http.client.responses[error.code],
+        }
         if error.description:
-            return {
-                "message": error.message,
-                "code": error.code,
-                "error": error.code_as_string if error.code_as_string else http.client.responses[error.code],
-                "description": error.description,
-            }
+            errors['description'] = error.description
+            
         if error.documentation:
-            return {
-                "message": error.message,
-                "code": error.code,
-                "error": error.code_as_string if error.code_as_string else http.client.responses[error.code],
-                "description": error.description,
-                "documentation": error.documentation,
-        }
-        return {
-            "message": error.message,
-            "code": error.code,
-            "error": error.code_as_string if error.code_as_string else http.client.responses[error.code],
-        }
+            errors['documentation'] = error.documentation
+            
+        return errors

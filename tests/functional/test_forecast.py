@@ -10,6 +10,7 @@ from src.models.beach import Beach
 from src.models.user import User
 from src.services.auth import AuthService
 from src.services.forecast import ForecastProcessingInternalError
+from src.utils.cache import cache
 
 @pytest.fixture(scope='function')
 def clean_beaches(app: Flask):
@@ -32,6 +33,7 @@ def clean_beaches(app: Flask):
   default_beach.save()
   with app.test_request_context():
     token = AuthService.generate_token(user.to_json())
+    cache.clear()
     return token
 
 def test_forecast_few_times(clean_beaches: str,client: FlaskClient, requests_mock: Mocker):

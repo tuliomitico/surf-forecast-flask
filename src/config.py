@@ -4,6 +4,8 @@ import os
 class Config:
     API_URL = 'https://api.stormglass.io/v2/'
     API_TOKEN = os.getenv('STORM_GLASS_API_TOKEN')
+    CACHE_TYPE = 'simple'
+    CACHE_DEFAULT_TIMEOUT = 3600
     DEBUG = False
     MONGODB_SETTINGS = {
         'host': os.getenv('MONGODB_URL',"mongodb://localhost/surf-forecast"),
@@ -11,6 +13,7 @@ class Config:
     }
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(milliseconds=200_000_000)
     SECRET_KEY = os.getenv('SECRET_KEY')
+    RATELIMIT_ENABLED = True
     SWAGGER = {
         "headers": [
             ('Access-Control-Allow-Origin', '*'),
@@ -48,3 +51,4 @@ class TestingConfig(Config):
     }
     SECRET_KEY = 'test'
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(milliseconds=10000)
+    RATELIMIT_ENABLED = False

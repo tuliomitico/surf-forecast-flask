@@ -1,7 +1,10 @@
+import logging
 import requests
 
-from ..utils.errors.internal_error import InternalError
 from ..utils import request as HTTPUtil
+from ..utils.errors.internal_error import InternalError
+from ..utils.cache import cache
+from ..utils.time import TimeUtil
 from ..config import Config
 
 storm_glass_resource_config = Config()
@@ -19,14 +22,28 @@ class StormGlassResponseError(InternalError):
 class StormGlass():
     storm_glass_api_params = "swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed"
     storm_glass_api_source = "noaa"
+
     def __init__(self, request = HTTPUtil.Request()) -> None:
         self.request = request
 
     def fetch_points(self, lat: float, lng: float):
+        cached_forecast_points = self._get_forecast_points_from_cache(
+            self.__get_cache_key(lat, lng)
+        )
+
+        if not cached_forecast_points:
+            forecast_points = self._get_forecast_point_from_api(lat, lng)
+            self.__set_forecast_points_in_cache(self.__get_cache_key(lat, lng), forecast_points)
+            return forecast_points
+        
+        return cached_forecast_points
+    
+    def _get_forecast_point_from_api(self, lat: float, lng: float):
+        end_timestamp = TimeUtil.get_unix_time_for_a_future_day(1)
         try:
             headers = {'Authorization': storm_glass_resource_config.API_TOKEN}
             response = self.request.get(
-                f'{storm_glass_resource_config.API_URL}weather/point?params={self.storm_glass_api_params}&source={self.storm_glass_api_source}&lat={lat}&lng={lng}',
+                f'{storm_glass_resource_config.API_URL}weather/point?params={self.storm_glass_api_params}&source={self.storm_glass_api_source}&lat={lat}&lng={lng}&end={end_timestamp}',
                 headers=headers
             )
             return self.__normalize_response(response.json())
@@ -36,6 +53,23 @@ class StormGlass():
             raise StormGlassResponseError(f'Error: {err.response} Code: {429}')
         except Exception as err:
             raise Exception(str(err))
+
+    def _get_forecast_points_from_cache(self,key: str):  
+        forecast_points_from_cache = cache.get(key)
+
+        if not forecast_points_from_cache: 
+            return
+        
+
+        logging.info(f"Using cache to return forecast points for key: {key}");
+        return forecast_points_from_cache
+
+    def  __get_cache_key(self,lat: float, lng: float) -> str:
+        return f"forecast_points_{lat}_{lng}"
+  
+    def __set_forecast_points_in_cache(self,key: str, forecast_points: list) -> bool:
+        logging.info(f'Updating cache to return forecast points for key: {key}')
+        return cache.set(key, forecast_points)
 
     def __normalize_response(self, points: dict):
         result = filter(self.__is_valid_point, points['hours'])

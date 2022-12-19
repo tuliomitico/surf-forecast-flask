@@ -46,6 +46,7 @@ class StormGlass():
                 f'{storm_glass_resource_config.API_URL}weather/point?params={self.storm_glass_api_params}&source={self.storm_glass_api_source}&lat={lat}&lng={lng}&end={end_timestamp}',
                 headers=headers
             )
+            response.raise_for_status()
             return self.__normalize_response(response.json())
         except ClientRequestError as err:
             raise ClientRequestError(err.message)

@@ -14,11 +14,17 @@ class Forecast():
         self._storm_glass = storm_glass
         self._rating_service = rating_service
     
-    def process_forecast_for_beaches(self, beaches: list):
+    def process_forecast_for_beaches(
+        self, beaches: list,order_by='desc',order_field='rating'
+    ):
+        reversing = None
+        if not order_by == 'desc':
+            reversing = False
+        reversing = True
         try:
             beach_forecast = self.__calculate_rating(beaches)
             for t in beach_forecast:
-                t['forecast'].sort(key=lambda d: d['rating'],reverse=True)
+                t['forecast'].sort(key=lambda d: d[order_field],reverse=reversing)
             
             return beach_forecast
             

@@ -104,7 +104,7 @@ def test_user_profile_info(clean_users,test_request: RequestContext,client: Flas
     token = AuthService.generate_token(user.to_json())
     response = client.get('/users/me',headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == 200
-    assert set(new_user.keys()).issubset(set(response.json.keys()))
+    assert set(new_user.keys()).issubset(set(response.json['user'].keys()))
 
 def test_not_found(test_request: RequestContext,client: FlaskClient):
     """Should return token's owner profile info"""

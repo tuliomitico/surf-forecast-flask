@@ -48,7 +48,7 @@ class UsersController(FlaskView, BaseController):
         if not current_user:
             return self._send_error_response(APIError(code=404),message='User not found!')
         user: User = current_user
-        return user.to_json(), 200
+        return jsonify(user = user.to_json()), 200
 
 
     def get(self):

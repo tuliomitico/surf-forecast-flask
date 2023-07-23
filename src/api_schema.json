@@ -11,7 +11,7 @@
     },
     "servers": [
       {
-        "url": "https://surf-forecast-prime.up.railway.app",
+        "url": "https://surf-forecast-hgy4.onrender.com",
         "description": "Production Server"
       },
       {

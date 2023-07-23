@@ -48,5 +48,5 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
         uses: bounceapp/render-action@0.6.0
         with:
-          render_token: ${{ secrets.RENDER_TOKEN }}
+          render-token: ${{ secrets.RENDER_TOKEN }}
           service-id: srv-ciupshp5rnuhcnv5h32g
